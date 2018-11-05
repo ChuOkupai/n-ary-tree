@@ -7,7 +7,7 @@ Node	newNode(char *data)
 	n = NULL;
 	n = (Node)malloc(sizeof(struct Node));
 	if (! n)
-		return NULL;
+		return n;
 	n->data = data;
 	n->next = NULL;
 	n->prev = NULL;
