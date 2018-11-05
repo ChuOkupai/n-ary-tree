@@ -9,18 +9,22 @@
 typedef struct Node* Node;
 struct Node
 {
-	void	*data;
+	char	*data;
 	Node	next;
 	Node	prev;
 	Node	parent;
 	Node	children;
 };
 
-Node	newNode(void *data);
+Node	newNode(char *data);
 
-void	newChildren(Node n, void *data);
+void	newChildren(Node n, char *data);
 
 void	freeNode(Node n);
+
+void	freeTree(Node n);
+
+int	totalNode(Node n);
 
 void	printNode(Node n);
 

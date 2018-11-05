@@ -1,6 +1,6 @@
 #include "node.h"
 
-Node	newNode(void *data)
+Node	newNode(char *data)
 {
 	Node n;
 	
@@ -16,7 +16,7 @@ Node	newNode(void *data)
 	return n;
 }
 
-void	newChildren(Node n, void *data)
+void	newChildren(Node n, char *data)
 {
 	if (! n)
 		return;
@@ -49,6 +49,32 @@ void	freeNode(Node n)
 	if (! n)
 		return;
 	free(n);
+	n = NULL;
+}
+
+void	freeTree(Node n)
+{
+	if (! n)
+		return;
+	if (n->children)
+		freeTree(n->children);
+	if (n->next)
+		freeTree(n->next);
+	freeNode(n);
+}
+
+int	totalNode(Node n)
+{
+	if (! n)
+		return 0;
+	int t;
+	
+	t = 0;
+	if (n->children)
+		t += totalNode(n->children);
+	if (n->next)
+		t += totalNode(n->next);
+	return 1 + t;
 }
 
 void	printNode(Node n)
@@ -61,13 +87,12 @@ void	printNode(Node n)
 	Node o;
 	int i;
 	
-	printf("Node->data = %s\n", (n->data) ? "true" : "false");
+	printf("Node->data = ");
 	if (n->data)
-	{
-		char *s = n->data;
-		printf("Node->data = %s\n", s);
-	}
-	printf("Node->next = ");
+		printf("%s", n->data);
+	else
+		printf("false");
+	printf("\nNode->next = ");
 	if (n->next)
 	{
 		for (i = 0, o = n; o->next; i++)
