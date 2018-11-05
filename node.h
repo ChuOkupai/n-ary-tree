@@ -18,7 +18,7 @@ struct Node
 
 Node	newNode(void *data);
 
-Node	newChildren(Node n, void *data);
+void	newChildren(Node n, void *data);
 
 void	freeNode(Node n);
 

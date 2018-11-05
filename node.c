@@ -16,10 +16,33 @@ Node	newNode(void *data)
 	return n;
 }
 
-/*Node	newChildren(Node n, void *data)
+void	newChildren(Node n, void *data)
 {
+	if (! n)
+		return;
+	if (! n->children)
+	{
+		n->children = newNode(data);
+		if (n->children)
+			n->children->parent = n;
+		return;
+	}
+	Node o, p;
 	
-}*/
+	o = n;
+	p = n->children;
+	while (p->next)
+	{
+		o = p;
+		p = p->next;
+	}
+	p->next = newNode(data);
+	if (p->next)
+	{
+		p->next->prev = o;
+		p->next->parent = p->parent;
+	}
+}
 
 void	freeNode(Node n)
 {
@@ -39,6 +62,11 @@ void	printNode(Node n)
 	int i;
 	
 	printf("Node->data = %s\n", (n->data) ? "true" : "false");
+	if (n->data)
+	{
+		char *s = n->data;
+		printf("Node->data = %s\n", s);
+	}
 	printf("Node->next = ");
 	if (n->next)
 	{
@@ -57,21 +85,12 @@ void	printNode(Node n)
 	}
 	else
 		printf("false");
-	printf("\nNode->parent = ");
-	if (n->parent)
-	{
-		for (i = 0, o = n; o->parent; i++)
-			o = o->parent;
-		printf("%d", i);
-	}
-	else
-		printf("false");
-	putchar('\n');
-	printf("Node->children = ");
+	printf("\nNode->parent = %s", (n->parent) ? "true" : "false");
+	printf("\nNode->children = ");
 	if (n->children)
 	{
-		for (i = 0, o = n; o->children; i++)
-			o = o->children;
+		for (i = 0, o = n->children; o; i++)
+			o = o->next;
 		printf("%d", i);
 	}
 	else
