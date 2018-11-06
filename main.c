@@ -18,7 +18,8 @@ void	exampleA()
 	printNode(n->children);
 	printf("n->children->next:\n");
 	printNode(n->children->next);
-	freeTree(n);
+	printf("total nodes: %d\n", totalNode(n));
+	n = freeTree(n);
 }
 
 void	exampleB()
@@ -48,7 +49,31 @@ void	exampleB()
 	printf("n->children->next:\n");
 	printNode(n->children->next);
 	printf("total nodes: %d\n", totalNode(n));
-	freeTree(n);
+	n = freeTree(n);
+}
+
+void	exampleC()
+{
+	/*
+	 *    o
+	 *   /
+	 *  o
+	 *  |
+	 *  o
+	 */
+	Node n;
+	
+	n = newNode("parent");
+	newChildren(n, "child1-1");
+	newChildren(searchNode(n, "child1-1"), "child2-1");
+	printf("n:\n");
+	printNode(n);
+	printf("n->children:\n");
+	printNode(n->children);
+	printf("n->children->children:\n");
+	printNode(n->children->children);
+	printf("total nodes: %d\n", totalNode(n));
+	n = freeTree(n);
 }
 
 int	main()
@@ -57,5 +82,7 @@ int	main()
 	exampleA();
 	printf("\nExample B:\n");
 	exampleB();
+	printf("\nExample C:\n");
+	exampleC();
 	return 0;
 }

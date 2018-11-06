@@ -44,23 +44,36 @@ void	newChildren(Node n, char *data)
 	}
 }
 
-void	freeNode(Node n)
+Node	searchNode(Node n, char *data)
 {
 	if (! n)
-		return;
-	free(n);
-	n = NULL;
+		return n;
+	if (n->data == data)
+		return n;
+	if (n->children)
+		return searchNode(n->children, data);
+	if (n->next)
+		return searchNode(n->next, data);
+	return NULL;
 }
 
-void	freeTree(Node n)
+Node	freeNode(Node n)
 {
 	if (! n)
-		return;
+		return n;
+	free(n);
+	return NULL;
+}
+
+Node	freeTree(Node n)
+{
+	if (! n)
+		return n;
 	if (n->children)
 		freeTree(n->children);
 	if (n->next)
 		freeTree(n->next);
-	freeNode(n);
+	return freeNode(n);
 }
 
 int	totalNode(Node n)
@@ -121,9 +134,4 @@ void	printNode(Node n)
 	else
 		printf("false");
 	putchar('\n');
-}
-
-void	clear()
-{
-	printf("\033c");
 }

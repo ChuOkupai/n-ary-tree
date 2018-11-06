@@ -16,18 +16,26 @@ struct Node
 	Node	children;
 };
 
+/* Create a new node */
 Node	newNode(char *data);
 
+/* Create a new children if node exist */
 void	newChildren(Node n, char *data);
 
-void	freeNode(Node n);
+/* Search a node in a tree */
+/** If node don't exist, return NULL **/
+Node	searchNode(Node n, char *data);
 
-void	freeTree(Node n);
+/* Free a node */
+Node	freeNode(Node n);
 
+/* Free a tree */
+Node	freeTree(Node n);
+
+/* Return the number of nodes in a tree */
 int	totalNode(Node n);
 
+/* Print a node */
 void	printNode(Node n);
-
-void	clear();
 
 #endif /* rpg.h */
