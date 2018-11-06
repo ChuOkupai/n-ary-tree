@@ -10,8 +10,14 @@ void	exampleA()
 	Node n;
 	
 	n = newNode("parent");
-	newChildren(n, "child1");
-	newChildren(n, "child2");
+	if (newChildren(n, "child1") ||
+		newChildren(n, "child2"))
+		n = freeTree(n);
+	if (! n)
+	{
+		printf("Error during tree initialization!\n");
+		return;
+	}
 	printf("n:\n");
 	printNode(n);
 	printf("n->children:\n");
@@ -36,14 +42,20 @@ void	exampleB()
 	Node n;
 	
 	n = newNode("parent");
-	newChildren(n, "child1-1");
-	newChildren(n, "child1-2");
-	newChildren(n->children->next, "child2-1");
-	newChildren(n->children->next, "child2-2");
-	newChildren(n->children->next, "child2-3");
-	newChildren(n->children->next->children->next, "child3-1");
-	newChildren(n->children->next->children->next->next, "child4-1");
-	newChildren(n->children->next->children->next->next, "child4-2");
+	if (newChildren(n, "child1-1") ||
+		newChildren(n, "child1-2") ||
+		newChildren(n->children->next, "child2-1") ||
+		newChildren(n->children->next, "child2-2") ||
+		newChildren(n->children->next, "child2-3") ||
+		newChildren(n->children->next->children->next, "child3-1") ||
+		newChildren(n->children->next->children->next->next, "child4-1") ||
+		newChildren(n->children->next->children->next->next, "child4-2"))
+		n = freeTree(n);
+	if (! n)
+	{
+		printf("Error during tree initialization!\n");
+		return;
+	}
 	printf("n:\n");
 	printNode(n);
 	printf("n->children->next:\n");
@@ -64,8 +76,14 @@ void	exampleC()
 	Node n;
 	
 	n = newNode("parent");
-	newChildren(n, "child1-1");
-	newChildren(searchNode(n, "child1-1"), "child2-1");
+	if (newChildren(n, "child1-1") ||
+		newChildren(searchNode(n, "child1-1"), "child2-1"))
+		n = freeTree(n);
+	if (! n)
+	{
+		printf("Error during tree initialization!\n");
+		return;
+	}
 	printf("n:\n");
 	printNode(n);
 	printf("n->children:\n");

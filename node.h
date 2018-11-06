@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct Node* Node;
 struct Node
@@ -20,7 +21,7 @@ struct Node
 Node	newNode(char *data);
 
 /* Create a new children if node exist */
-void	newChildren(Node n, char *data);
+int	newChildren(Node n, char *data);
 
 /* Search a node in a tree */
 /** If node don't exist, return NULL **/

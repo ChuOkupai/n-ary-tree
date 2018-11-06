@@ -16,16 +16,17 @@ Node	newNode(char *data)
 	return n;
 }
 
-void	newChildren(Node n, char *data)
+int	newChildren(Node n, char *data)
 {
 	if (! n)
-		return;
+		return 1;
 	if (! n->children)
 	{
 		n->children = newNode(data);
-		if (n->children)
-			n->children->parent = n;
-		return;
+		if (! n->children)
+			return 2;
+		n->children->parent = n;
+		return 0;
 	}
 	Node o, p;
 	
@@ -37,23 +38,23 @@ void	newChildren(Node n, char *data)
 		p = p->next;
 	}
 	p->next = newNode(data);
-	if (p->next)
-	{
-		p->next->prev = o;
-		p->next->parent = p->parent;
-	}
+	if (! p->next)
+		return 3;
+	p->next->prev = o;
+	p->next->parent = p->parent;
+	return 0;
 }
 
 Node	searchNode(Node n, char *data)
 {
 	if (! n)
 		return n;
-	if (n->data == data)
+	if (! strcmp(n->data, data))
 		return n;
-	if (n->children)
-		return searchNode(n->children, data);
 	if (n->next)
 		return searchNode(n->next, data);
+	if (n->children)
+		return searchNode(n->children, data);
 	return NULL;
 }
 
