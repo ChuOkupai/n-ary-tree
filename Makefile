@@ -5,7 +5,7 @@ clean:
 	rm -f *.o *.out
 
 main.out: main.c node.c node.h
-	$(CC) $(CFLAGS) $^ -o $@ -g
+	$(CC) $(CFLAGS) $^ -o $@
 
 run: main.out
 	./$<
