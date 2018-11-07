@@ -45,17 +45,89 @@ int	newChildren(Node n, char *data)
 	return 0;
 }
 
-Node	searchNode(Node n, char *data)
+int	newParent(Node n, char *data)
+{
+	if (! n)
+		return 1;
+	if (n->parent)
+		return 2;
+	
+	n->parent = newNode(data);
+	if (! n->parent)
+		return 3;
+	n->parent->children = n;
+	return 0;
+}
+
+Node	searchNode(Node root, char *data)
+{
+	if (! root)
+		return root;
+	if (! strcmp(root->data, data))
+		return root;
+	if (root->next)
+		return searchNode(root->next, data);
+	if (root->children)
+		return searchNode(root->children, data);
+	return NULL;
+}
+
+Node	getNodeRoot(Node n)
 {
 	if (! n)
 		return n;
-	if (! strcmp(n->data, data))
+	if (n->parent)
+		return getNodeRoot(n->parent);
+	return n;
+}
+
+Node	getFirstChild(Node n)
+{
+	if (! n)
 		return n;
-	if (n->next)
-		return searchNode(n->next, data);
 	if (n->children)
-		return searchNode(n->children, data);
+		return n->children;
 	return NULL;
+}
+
+Node	getLastChild(Node n)
+{
+	if (! n)
+		return n;
+	if (! n->children)
+		return NULL;
+	n = n->children;
+	while (n->next)
+		n = n->next;
+	return n;
+}
+
+int	getTotalChildren(Node n)
+{
+	if (! n)
+		return 0;
+	if (! n->children)
+		return 0;
+	int t;
+	
+	n = n->children;
+	for (t = 1; n->next; t++)
+		n = n->next;
+	return t;
+}
+
+int	getTotalNode(Node root)
+{
+	if (! root)
+		return 0;
+	int t;
+	
+	t = 0;
+	if (root->children)
+		t += getTotalNode(root->children);
+	if (root->next)
+		t += getTotalNode(root->next);
+	return 1 + t;
 }
 
 Node	freeNode(Node n)
@@ -66,73 +138,13 @@ Node	freeNode(Node n)
 	return NULL;
 }
 
-Node	freeTree(Node n)
+Node	freeTree(Node root)
 {
-	if (! n)
-		return n;
-	if (n->children)
-		freeTree(n->children);
-	if (n->next)
-		freeTree(n->next);
-	return freeNode(n);
-}
-
-int	totalNode(Node n)
-{
-	if (! n)
-		return 0;
-	int t;
-	
-	t = 0;
-	if (n->children)
-		t += totalNode(n->children);
-	if (n->next)
-		t += totalNode(n->next);
-	return 1 + t;
-}
-
-void	printNode(Node n)
-{
-	if (! n)
-	{
-		printf("Node is empty!\n");
-		return;
-	}
-	Node o;
-	int i;
-	
-	printf("Node->data = ");
-	if (n->data)
-		printf("%s", n->data);
-	else
-		printf("false");
-	printf("\nNode->next = ");
-	if (n->next)
-	{
-		for (i = 0, o = n; o->next; i++)
-			o = o->next;
-		printf("%d", i);
-	}
-	else
-		printf("false");
-	printf("\nNode->prev = ");
-	if (n->prev)
-	{
-		for (i = 0, o = n; o->prev; i++)
-			o = o->prev;
-		printf("%d", i);
-	}
-	else
-		printf("false");
-	printf("\nNode->parent = %s", (n->parent) ? "true" : "false");
-	printf("\nNode->children = ");
-	if (n->children)
-	{
-		for (i = 0, o = n->children; o; i++)
-			o = o->next;
-		printf("%d", i);
-	}
-	else
-		printf("false");
-	putchar('\n');
+	if (! root)
+		return root;
+	if (root->children)
+		freeTree(root->children);
+	if (root->next)
+		freeTree(root->next);
+	return freeNode(root);
 }

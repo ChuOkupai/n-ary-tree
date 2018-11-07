@@ -1,9 +1,6 @@
-#ifndef	_RPG_H
-#define	_RPG_H	1
+#ifndef	_NODE_H
+#define	_NODE_H	1
 
-#include "ansics.h"
-#include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -21,22 +18,37 @@ struct Node
 Node	newNode(char *data);
 
 /* Create a new children if node exist */
+/** return a positive value on error **/
 int	newChildren(Node n, char *data);
+
+/* Create a new parent if node exist without parent or a new node */
+int	newParent(Node n, char *data);
 
 /* Search a node in a tree */
 /** If node don't exist, return NULL **/
-Node	searchNode(Node n, char *data);
+Node	searchNode(Node root, char *data);
+
+/* Get the root node in a tree */
+Node	getNodeRoot(Node n);
+
+/* Get the first child of node or NULL */
+Node	getFirstChild(Node n);
+
+/* Get the last child of node or NULL */
+Node	getLastChild(Node n);
+
+/* Return the number of children of a node */
+int	getTotalChildren(Node n);
+
+/* Return the number of nodes in a tree */
+int	getTotalNode(Node root);
 
 /* Free a node */
+/** Return a NULL pointer **/
 Node	freeNode(Node n);
 
 /* Free a tree */
-Node	freeTree(Node n);
+/** Return a NULL pointer **/
+Node	freeTree(Node root);
 
-/* Return the number of nodes in a tree */
-int	totalNode(Node n);
-
-/* Print a node */
-void	printNode(Node n);
-
-#endif /* rpg.h */
+#endif /* node.h */
