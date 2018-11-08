@@ -1,5 +1,6 @@
 #include "node.h"
 #include <stdio.h>
+#include <string.h>
 
 /* Print a node */
 void	printNode(Node n)
@@ -11,10 +12,14 @@ void	printNode(Node n)
 	}
 	Node o;
 	int i;
+	char *data;
 	
 	printf("Node->data = ");
 	if (n->data)
-		printf("%s", n->data);
+	{
+		data = n->data;
+		printf("%s", data);
+	}
 	else
 		printf("false");
 	printf("\nNode->next = ");
@@ -46,6 +51,12 @@ void	printNode(Node n)
 	else
 		printf("false");
 	putchar('\n');
+}
+
+/* Compare 2 data elements */
+int compare(void const *a, void const *b)
+{
+	return strcmp((char const*)a, (char const*)b);
 }
 
 void	exampleA()
@@ -104,6 +115,8 @@ void	exampleB()
 		printf("Error during tree initialization!\n");
 		return;
 	}
+	if (searchNode(n, "child4-1", compare))
+		printf("Node child4-1 found!\n");
 	printf("n:\n");
 	printNode(n);
 	printf("n->children->next:\n");
@@ -125,7 +138,7 @@ void	exampleC()
 	
 	n = newNode("parent");
 	if (newChildren(n, "child1-1") ||
-		newChildren(searchNode(n, "child1-1"), "child2-1"))
+		newChildren(searchNode(n, "child1-1", compare), "child2-1"))
 		n = freeTree(n);
 	if (! n)
 	{

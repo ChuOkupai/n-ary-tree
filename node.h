@@ -2,12 +2,11 @@
 #define	_NODE_H	1
 
 #include <stdlib.h>
-#include <string.h>
 
 typedef struct Node* Node;
 struct Node
 {
-	char	*data;
+	void	*data;
 	Node	next;
 	Node	prev;
 	Node	parent;
@@ -15,18 +14,18 @@ struct Node
 };
 
 /* Create a new node */
-Node	newNode(char *data);
+Node	newNode(void *data);
 
 /* Create a new children if node exist */
 /** return a positive value on error **/
-int	newChildren(Node n, char *data);
+int	newChildren(Node n, void *data);
 
 /* Create a new parent if node exist without parent or a new node */
-int	newParent(Node n, char *data);
+int	newParent(Node n, void *data);
 
 /* Search a node in a tree */
 /** If node don't exist, return NULL **/
-Node	searchNode(Node root, char *data);
+Node	searchNode(Node root, void const *data, int (*compare)(void const *a, void const *b));
 
 /* Get the root node in a tree */
 Node	getNodeRoot(Node n);

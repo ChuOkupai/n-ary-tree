@@ -1,6 +1,6 @@
 #include "node.h"
 
-Node	newNode(char *data)
+Node	newNode(void *data)
 {
 	Node n;
 	
@@ -16,7 +16,7 @@ Node	newNode(char *data)
 	return n;
 }
 
-int	newChildren(Node n, char *data)
+int	newChildren(Node n, void *data)
 {
 	if (! n)
 		return 1;
@@ -45,7 +45,7 @@ int	newChildren(Node n, char *data)
 	return 0;
 }
 
-int	newParent(Node n, char *data)
+int	newParent(Node n, void *data)
 {
 	if (! n)
 		return 1;
@@ -59,16 +59,16 @@ int	newParent(Node n, char *data)
 	return 0;
 }
 
-Node	searchNode(Node root, char *data)
+Node	searchNode(Node root, void const *data, int (*compare)(void const *a, void const *b))
 {
 	if (! root)
 		return root;
-	if (! strcmp(root->data, data))
+	if (! compare(data, root->data))
 		return root;
 	if (root->next)
-		return searchNode(root->next, data);
+		return searchNode(root->next, data, compare);
 	if (root->children)
-		return searchNode(root->children, data);
+		return searchNode(root->children, data, compare);
 	return NULL;
 }
 
