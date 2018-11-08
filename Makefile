@@ -4,8 +4,11 @@ CFLAGS=-O3 -Wall -Wextra -Werror
 clean:
 	rm -f *.o *.out
 
-main.out: main.c node.c node.h
+%.out: %.c node.c node.h
 	$(CC) $(CFLAGS) $^ -o $@
 
-run: main.out
+main: main.out
+	./$<
+
+sample0: sample0.out
 	./$<
