@@ -19,12 +19,7 @@ Node	newNode(void *data)
 int	newChildren(Node n, void *data)
 {
 	if (! n)
-	{
-		n = newNode(data);
-		if (! n)
-			return 1;
-		return 0;
-	}
+		return 1;
 	if (! n->children)
 	{
 		n->children = newNode(data);

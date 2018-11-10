@@ -10,5 +10,5 @@ clean:
 main: main.out
 	./$<
 
-sample0: sample0.out
-	./$<
+sample0: loadTree.out
+	./$< $@.tree
