@@ -1,0 +1,17 @@
+"DIALOG1"
+	# one string without comma is always considered as a new dialog so answer will be NULL
+
+"DIALOG2","ANSWER1"
+	# DIALOG2 + ANSWER1 is the first child of DIALOG1
+
+"DIALOG3-1","ANSWER2-1"^
+	# DIALOG3-1 + ANSWER2-1 is the first child of DIALOG2 / xor symbol tell to return to the parent
+
+"DIALOG3-2","ANSWER2-2"
+	# DIALOG3-2 + ANSWER2-2 is the second child of DIALOG2
+
+	# Tree:
+	# DIALOG1
+	# -> ANSWER1 -> DIALOG2
+	#               -> ANSWER2-1 -> DIALOG3-1
+	#               -> ANSWER2-2 -> DIALOG3-2

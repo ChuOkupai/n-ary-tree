@@ -56,19 +56,24 @@ int	newParent(Node n, void *data)
 	if (! n->parent)
 		return 3;
 	n->parent->children = n;
+	while (n->next)
+	{
+		n = n->next;
+		n->parent = n->prev->parent;
+	}
 	return 0;
 }
 
-Node	searchNode(Node root, void const *data, int (*compare)(void const *a, void const *b))
+Node	searchNode(Node n, void const *data, int (*compare)(void const *a, void const *b))
 {
-	if (! root)
-		return root;
-	if (! compare(data, root->data))
-		return root;
-	if (root->next)
-		return searchNode(root->next, data, compare);
-	if (root->children)
-		return searchNode(root->children, data, compare);
+	if (! n)
+		return n;
+	if (! compare(data, n->data))
+		return n;
+	if (n->next)
+		return searchNode(n->next, data, compare);
+	if (n->children)
+		return searchNode(n->children, data, compare);
 	return NULL;
 }
 
@@ -116,17 +121,17 @@ int	getTotalChildren(Node n)
 	return t;
 }
 
-int	getTotalNode(Node root)
+int	getTotalNode(Node n)
 {
-	if (! root)
+	if (! n)
 		return 0;
 	int t;
 	
 	t = 0;
-	if (root->children)
-		t += getTotalNode(root->children);
-	if (root->next)
-		t += getTotalNode(root->next);
+	if (n->children)
+		t += getTotalNode(n->children);
+	if (n->next)
+		t += getTotalNode(n->next);
 	return 1 + t;
 }
 
@@ -138,13 +143,13 @@ Node	freeNode(Node n)
 	return NULL;
 }
 
-Node	freeTree(Node root)
+Node	freeTree(Node n)
 {
-	if (! root)
-		return root;
-	if (root->children)
-		freeTree(root->children);
-	if (root->next)
-		freeTree(root->next);
-	return freeNode(root);
+	if (! n)
+		return n;
+	if (n->children)
+		freeTree(n->children);
+	if (n->next)
+		freeTree(n->next);
+	return freeNode(n);
 }

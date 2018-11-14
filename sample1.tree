@@ -1,7 +1,7 @@
 "Bonjour !"
-"Comment allez-vous ?">"Très bien">"Je pourrais allez mieux..."
-"Content de l'entendre !".
-"Pourquoi ?">"Je me sens fatigué">"Je suis malade">"En quoi cela vous regarde ?"
-"Courage...".
-"Courage...".
-"Oh heu... Veuillez m'excusez."
+"Comment allez-vous ?"
+"Content de l'entendre !","Très bien"^
+"Pourquoi ?","Je pourrais aller mieux..."
+"Courage...","Je me sens fatigué"^
+"Courage...","Je suis malade"^
+"Oh heu... Veuillez m'excusez.","En quoi cela vous regarde ?"

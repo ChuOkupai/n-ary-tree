@@ -20,14 +20,14 @@ Node	newNode(void *data);
 /** return a positive value on error **/
 int	newChildren(Node n, void *data);
 
-/* Create a new parent if node exist without parent or a new node */
+/* Create a new parent if node exist without parent */
 int	newParent(Node n, void *data);
 
-/* Search a node in a tree */
+/* Search a node starting from a node */
 /** If node don't exist, return NULL **/
-Node	searchNode(Node root, void const *data, int (*compare)(void const *a, void const *b));
+Node	searchNode(Node n, void const *data, int (*compare)(void const *a, void const *b));
 
-/* Get the root node in a tree */
+/* Get the root node in a tree (the first parent) */
 Node	getNodeRoot(Node n);
 
 /* Get the first child of node or NULL */
@@ -40,14 +40,14 @@ Node	getLastChild(Node n);
 int	getTotalChildren(Node n);
 
 /* Return the number of nodes in a tree */
-int	getTotalNode(Node root);
+int	getTotalNode(Node n);
 
 /* Free a node */
 /** Return a NULL pointer **/
 Node	freeNode(Node n);
 
-/* Free a tree */
+/* Free a tree from node */
 /** Return a NULL pointer **/
-Node	freeTree(Node root);
+Node	freeTree(Node n);
 
 #endif /* node.h */

@@ -3,26 +3,23 @@
 #include <string.h>
 
 /* Print a node */
-void	printNode(Node n)
+void	printNode(char *name, Node n)
 {
+	printf(" \e[4m%s:\e[0m\n", name);
 	if (! n)
 	{
-		printf("Node is empty!\n");
+		printf("  empty!\n");
 		return;
 	}
 	Node o;
 	int i;
-	char *data;
 	
-	printf("Node->data = ");
+	printf("  data     = ");
 	if (n->data)
-	{
-		data = n->data;
-		printf("%s", data);
-	}
+		printf("%s", (char*)n->data);
 	else
 		printf("false");
-	printf("\nNode->next = ");
+	printf("\n  next     = ");
 	if (n->next)
 	{
 		for (i = 0, o = n; o->next; i++)
@@ -31,7 +28,7 @@ void	printNode(Node n)
 	}
 	else
 		printf("false");
-	printf("\nNode->prev = ");
+	printf("\n  prev     = ");
 	if (n->prev)
 	{
 		for (i = 0, o = n; o->prev; i++)
@@ -40,8 +37,8 @@ void	printNode(Node n)
 	}
 	else
 		printf("false");
-	printf("\nNode->parent = %s", (n->parent) ? "true" : "false");
-	printf("\nNode->children = ");
+	printf("\n  parent   = %s", (n->parent) ? "true" : "false");
+	printf("\n  children = ");
 	if (n->children)
 	{
 		for (i = 0, o = n->children; o; i++)
@@ -53,7 +50,7 @@ void	printNode(Node n)
 	putchar('\n');
 }
 
-/* Compare 2 data elements */
+/* Compare 2 data elements (char*) */
 int compare(void const *a, void const *b)
 {
 	return strcmp((char const*)a, (char const*)b);
@@ -61,6 +58,7 @@ int compare(void const *a, void const *b)
 
 void	exampleA()
 {
+	printf("\e[4mExample A:\e[0m\n");
 	/*
 	 *    o
 	 *   / \
@@ -77,18 +75,16 @@ void	exampleA()
 		printf("Error during tree initialization!\n");
 		return;
 	}
-	printf("n:\n");
-	printNode(n);
-	printf("n->children:\n");
-	printNode(n->children);
-	printf("n->children->next:\n");
-	printNode(n->children->next);
-	printf("total nodes: %d\n", getTotalNode(n));
+	printNode("n", n);
+	printNode("n->children", n->children);
+	printNode("n->children->next", n->children->next);
+	printf(" \e[4mtotal:\e[0m %d\n", getTotalNode(n));
 	n = freeTree(n);
 }
 
 void	exampleB()
 {
+	printf("\e[4mExample B:\e[0m\n");
 	/*
 	 *     o  
 	 *   / |
@@ -115,18 +111,15 @@ void	exampleB()
 		printf("Error during tree initialization!\n");
 		return;
 	}
-	if (searchNode(n, "child4-1", compare))
-		printf("Node child4-1 found!\n");
-	printf("n:\n");
-	printNode(n);
-	printf("n->children->next:\n");
-	printNode(n->children->next);
-	printf("total nodes: %d\n", getTotalNode(n));
+	printNode("n", n);
+	printNode("n->children->next", n->children->next);
+	printf(" \e[4mtotal:\e[0m %d\n", getTotalNode(n));
 	n = freeTree(n);
 }
 
 void	exampleC()
 {
+	printf("\e[4mExample C:\e[0m\n");
 	/*
 	 *    o
 	 *   /
@@ -145,23 +138,19 @@ void	exampleC()
 		printf("Error during tree initialization!\n");
 		return;
 	}
-	printf("n:\n");
-	printNode(n);
-	printf("n->children:\n");
-	printNode(n->children);
-	printf("n->children->children:\n");
-	printNode(n->children->children);
-	printf("total nodes: %d\n", getTotalNode(n));
+	printNode("n", n);
+	printNode("n->children", n->children);
+	printNode("n->children->children", n->children->children);
+	printf(" \e[4mtotal:\e[0m %d\n", getTotalNode(n));
 	n = freeTree(n);
 }
 
 int	main()
 {
-	printf("Example A:\n");
 	exampleA();
-	printf("\nExample B:\n");
+	putchar('\n');
 	exampleB();
-	printf("\nExample C:\n");
+	putchar('\n');
 	exampleC();
 	return 0;
 }

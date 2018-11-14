@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-O3 -Wall -Wextra -Werror
 
 clean:
-	rm -f *.o *.out
+	rm -f *.out
 
 %.out: %.c node.c node.h
 	$(CC) $(CFLAGS) $^ -o $@
@@ -10,5 +10,5 @@ clean:
 main: main.out
 	./$<
 
-sample0: loadTree.out
+sample%: loadTree.out
 	./$< $@.tree
