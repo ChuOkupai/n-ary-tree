@@ -1,5 +1,6 @@
 #include "node.h"
 #include <stdio.h>
+#include <string.h>
 
 #define ERR_OPEN	-1
 #define ERR_LOAD	-2
@@ -77,30 +78,35 @@ char*	fdatagrep(FILE *f)
 Node	loadTree(char const *filename)
 {
 	FILE	*f;
-	Node	r;
+	Node	root;
 	Node	n;
-	int		a;
+	int		answer;
+	int		comment;
 	int		c;
 	
 	f = NULL;
-	r = NULL;
+	root = NULL;
 	n = NULL;
-	a = 0;
+	answer = 0;
+	comment = 0;
 	f = fopen(filename, "r");
 	if (! f)
 		err = ERR_OPEN;
 	for (c = 0; c != EOF; c = fgetc(f))
 	{
-		if (c == '"')
+		if (c == '#' || (comment && c == '\n'))
+			comment = 1 - comment;
+		else if (comment);
+		else if (c == '"')
 		{
-			if (r)
+			if (root)
 			{
-				if (a)
+				if (answer)
 				{
 					((Data*)n->data)->answer = fdatagrep(f);
 					if (! ((Data*)n->data)->answer)
 						err = ERR_OPEN;
-					a = 0;
+					answer = 0;
 				}
 				else 
 				{
@@ -112,23 +118,23 @@ Node	loadTree(char const *filename)
 			}
 			else
 			{
-				r = newNode(newData(NULL, fdatagrep(f)));
-				if (r)
-					n = r;
+				root = newNode(newData(NULL, fdatagrep(f)));
+				if (root)
+					n = root;
 				else
 					err = ERR_OPEN;
 			}
 		}
 		else if (c == ',')
 		{
-			if (! a && r)
-				a = 1;
+			if (! answer && root)
+				answer = 1;
 			else
 				err = ERR_SYNT;
 		}
 		else if (c == '^')
 		{
-			if ((a || ! n->parent) && r)
+			if ((answer || ! n->parent) && root)
 				err = ERR_SYNT;
 			else
 				n = n->parent;
@@ -136,9 +142,11 @@ Node	loadTree(char const *filename)
 		if (err)
 			break;
 	}
+	if (answer)
+		err = ERR_SYNT;
 	if (f)
 		fclose(f);
-	return r;
+	return root;
 }
 
 void	checkNode(Node n)
@@ -171,8 +179,21 @@ void	checkNode(Node n)
 
 int	main(int argc, char **argv)
 {
+	if (argc < 2)
+		printf("%s: missing file operand\nTry '%s --help' for more information\n", argv[0], argv[0]);
 	Node	n;
+	int i;
 	
+	for (i = 1; i < argc; i++)
+	{
+		if (! strcmp(argv[i], "--help"))
+		{
+			printf("Usage: %s [FILE]...\n", argv[0]);
+			printf("Load and concatenate tree FILE(s) to standard output.\n\n");
+			printf("Example:\n  %s sample.tree  Output loaded sample.tree's content\n", argv[0]);
+			argc = 1;
+		}
+	}
 	for (int i = 1; i < argc; i++)
 	{
 		err = 0;
@@ -188,7 +209,8 @@ int	main(int argc, char **argv)
 			else // err == ERR_SYNT
 				puts("Syntax error");
 		}
-		checkNode(n);
+		else
+			checkNode(n);
 		n = freeTree(n);
 		
 	}

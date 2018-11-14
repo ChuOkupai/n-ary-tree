@@ -9,3 +9,6 @@ clean:
 
 run: main.out
 	./$<
+
+loadTree: loadTree.out
+	./$<

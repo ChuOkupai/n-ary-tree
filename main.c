@@ -103,8 +103,7 @@ void	exampleB()
 		newChildren(n->children->next, "child2-2") ||
 		newChildren(n->children->next, "child2-3") ||
 		newChildren(n->children->next->children->next, "child3-1") ||
-		newChildren(n->children->next->children->next->nextmake clean
-		) ||
+		newChildren(n->children->next->children->next->next, "child4-2") ||
 		newChildren(n->children->next->children->next->next, "child4-2"))
 		n = freeTree(n);
 	if (! n)
