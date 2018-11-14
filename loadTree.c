@@ -5,6 +5,7 @@
 #define ERR_OPEN	-1
 #define ERR_LOAD	-2
 #define ERR_SYNT	-3
+#define ERR_EMPTY	-4
 int err;
 
 typedef struct Data
@@ -29,6 +30,7 @@ Data*	newData(char *answer, char *dialog)
 	return d;
 }
 
+/* strlen for string in file */
 int	fdatalen(FILE *f)
 {
 	if (! f)
@@ -48,6 +50,7 @@ int	fdatalen(FILE *f)
 	return l + 1;
 }
 
+/* return string from file */
 char*	fdatagrep(FILE *f)
 {
 	if (! f)
@@ -71,7 +74,6 @@ char*	fdatagrep(FILE *f)
 	for (int i = 0; i < l; i++)
 		s[i] = fgetc(f);
 	s[l - 1] = '\0';
-	//printf("%s\n", s);
 	return s;
 }
 
@@ -94,10 +96,10 @@ Node	loadTree(char const *filename)
 		err = ERR_OPEN;
 	for (c = 0; c != EOF; c = fgetc(f))
 	{
-		if (c == '#' || (comment && c == '\n'))
+		if (c == '#' || (comment && c == '\n')) // Check for comment
 			comment = 1 - comment;
-		else if (comment);
-		else if (c == '"')
+		else if (comment); // Do nothing if comment
+		else if (c == '"') // Add a new string
 		{
 			if (root)
 			{
@@ -125,37 +127,36 @@ Node	loadTree(char const *filename)
 					err = ERR_OPEN;
 			}
 		}
-		else if (c == ',')
+		else if (c == ',') //  Next string is an answer
 		{
 			if (! answer && root)
 				answer = 1;
 			else
 				err = ERR_SYNT;
 		}
-		else if (c == '^')
+		else if (c == '^') // Return to parent
 		{
-			if ((answer || ! n->parent) && root)
-				err = ERR_SYNT;
-			else
+			if (! answer && root && n->parent)
 				n = n->parent;
+			else
+				err = ERR_SYNT;
 		}
 		if (err)
 			break;
 	}
 	if (answer)
 		err = ERR_SYNT;
+	if (! (err || root))
+		err = ERR_EMPTY;
 	if (f)
 		fclose(f);
 	return root;
 }
 
-void	checkNode(Node n)
+void	printNode(Node n)
 {
 	if (! n)
-	{
-		printf("empty!\n");
 		return;
-	}
 	Node r;
 	
 	r = n;
@@ -172,9 +173,9 @@ void	checkNode(Node n)
 		}
 	}
 	if (r->children)
-		checkNode(r->children);
+		printNode(r->children);
 	if (r->next)
-		checkNode(r->next);
+		printNode(r->next);
 }
 
 int	main(int argc, char **argv)
@@ -186,16 +187,18 @@ int	main(int argc, char **argv)
 	
 	for (i = 1; i < argc; i++)
 	{
+		// Check for help flag
 		if (! strcmp(argv[i], "--help"))
 		{
 			printf("Usage: %s [FILE]...\n", argv[0]);
-			printf("Load and concatenate tree FILE(s) to standard output.\n\n");
+			printf("Load and print tree FILE(s) to standard output.\n\n");
 			printf("Example:\n  %s sample.tree  Output loaded sample.tree's content\n", argv[0]);
 			argc = 1;
 		}
 	}
 	for (int i = 1; i < argc; i++)
 	{
+		// Load file and display tree's content is there is no error
 		err = 0;
 		n = NULL;
 		n = loadTree(argv[i]);
@@ -206,11 +209,13 @@ int	main(int argc, char **argv)
 				puts("No such file or directory");
 			else if (err == ERR_LOAD)
 				puts("Could not load tree");
-			else // err == ERR_SYNT
+			else if (err == ERR_SYNT)
 				puts("Syntax error");
+			else // err == ERR_EMPTY
+				puts("Tree is empty");
 		}
 		else
-			checkNode(n);
+			printNode(n);
 		n = freeTree(n);
 		
 	}
