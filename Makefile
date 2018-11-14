@@ -7,8 +7,5 @@ clean:
 %.out: %.c node.c node.h
 	$(CC) $(CFLAGS) $^ -o $@
 
-main: main.out
+run: main.out
 	./$<
-
-sample%: loadTree.out
-	./$< $@.tree

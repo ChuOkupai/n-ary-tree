@@ -1,0 +1,11 @@
+# Example B from main.c
+
+"parent"
+  "child1-1"^
+  "child1-2"
+    "child2-1"^
+    "child2-2"
+      "child3-1"^^
+    "child2-3"
+      "child4-1"^
+      "child4-2"
