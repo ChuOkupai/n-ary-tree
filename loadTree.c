@@ -14,87 +14,86 @@ typedef struct Data
 	char	*dialog;
 }	Data;
 
-Data*	newData(char *answer, char *dialog)
+Data*	dataNew(char *answer, char *dialog)
 {
-	Data	*d;
+	Data	*data;
 	
-	d = NULL;
-	d = malloc(sizeof(Data*));
-	if (d)
+	data = NULL;
+	data = malloc(sizeof(Data*));
+	if (data)
 	{
-		d->answer = answer;
-		d->dialog = dialog;
+		data->answer = answer;
+		data->dialog = dialog;
 	}
 	else
 		err = ERR_LOAD;
-	return d;
+	return data;
 }
 
 /* strlen for string in file */
-int	fdatalen(FILE *f)
+int	dataLen(FILE *file)
 {
-	if (! f)
+	if (! file)
 	{
 		err = ERR_LOAD;
 		return 0;
 	}
-	int		l;
+	int		len;
 	int		c;
 	
-	l = 0;
-	for (c = fgetc(f); c != '"' && c != EOF; c = fgetc(f))
-		l++;
-	if (! l || c == EOF)
+	len = 0;
+	for (c = fgetc(file); c != '"' && c != EOF; c = fgetc(file))
+		len++;
+	if (! len || c == EOF)
 		err = ERR_SYNT;
-	fseek(f, -l - 1, SEEK_CUR);
-	return l + 1;
+	fseek(file, -len - 1, SEEK_CUR);
+	return len + 1;
 }
 
 /* return string from file */
-char*	fdatagrep(FILE *f)
+char*	dataGrep(FILE *file)
 {
-	if (! f)
+	if (! file)
 	{
 		err = ERR_LOAD;
 		return NULL;
 	}
-	char	*s;
-	int		l;
+	char	*str;
+	int		len;
 	
-	s = NULL;
-	l = fdatalen(f);
+	str = NULL;
+	len = dataLen(file);
 	if (err)
-		return s;
-	s = malloc(l + 1);
-	if (! s)
+		return str;
+	str = malloc(len + 1);
+	if (! str)
 	{
 		err = ERR_LOAD;
-		return s;
+		return str;
 	}
-	for (int i = 0; i < l; i++)
-		s[i] = fgetc(f);
-	s[l - 1] = '\0';
-	return s;
+	for (int i = 0; i < len; i++)
+		str[i] = fgetc(file);
+	str[len - 1] = '\0';
+	return str;
 }
 
-Node	loadTree(char const *filename)
+Node*	loadTree(char const *filename)
 {
-	FILE	*f;
-	Node	root;
-	Node	n;
+	FILE	*file;
+	Node	*root;
+	Node	*node;
 	int		answer;
 	int		comment;
 	int		c;
 	
-	f = NULL;
 	root = NULL;
-	n = NULL;
+	node = NULL;
 	answer = 0;
 	comment = 0;
-	f = fopen(filename, "r");
-	if (! f)
+	file = fopen(filename, "r");
+	if (! file)
 		err = ERR_OPEN;
-	for (c = 0; c != EOF; c = fgetc(f))
+	for (c = 0; c != EOF; c = fgetc(file))
 	{
 		if (c == '#' || (comment && c == '\n')) // Check for comment
 			comment = 1 - comment;
@@ -105,24 +104,23 @@ Node	loadTree(char const *filename)
 			{
 				if (answer)
 				{
-					((Data*)n->data)->answer = fdatagrep(f);
-					if (! ((Data*)n->data)->answer)
+					((Data*)node->data)->answer = dataGrep(file);
+					if (! ((Data*)node->data)->answer)
 						err = ERR_OPEN;
 					answer = 0;
 				}
 				else 
 				{
-					if (newChildren(n, newData(NULL, fdatagrep(f))))
+					node = nodeAppend(node, nodeNew(dataNew(NULL, dataGrep(file))));
+					if (! node)
 						err = ERR_OPEN;
-					else
-						n = getLastChild(n);
 				}
 			}
 			else
 			{
-				root = newNode(newData(NULL, fdatagrep(f)));
+				root = nodeNew(dataNew(NULL, dataGrep(file)));
 				if (root)
-					n = root;
+					node = root;
 				else
 					err = ERR_OPEN;
 			}
@@ -136,8 +134,8 @@ Node	loadTree(char const *filename)
 		}
 		else if (c == '^') // Return to parent
 		{
-			if (! answer && root && n->parent)
-				n = n->parent;
+			if (! answer && root && node->parent)
+				node = node->parent;
 			else
 				err = ERR_SYNT;
 		}
@@ -148,41 +146,41 @@ Node	loadTree(char const *filename)
 		err = ERR_SYNT;
 	if (! (err || root))
 		err = ERR_EMPTY;
-	if (f)
-		fclose(f);
+	if (file)
+		fclose(file);
 	return root;
 }
 
-void	printNode(Node n)
+void	nodePrint(Node *node)
 {
-	if (! n)
+	if (! node)
 		return;
-	Node r;
+	Node *root;
 	
-	r = n;
-	if (((Data*)n->data)->dialog)
-		printf("%s\n", ((Data*)n->data)->dialog);
-	if (n->children)
+	root = node;
+	if (((Data*)node->data)->dialog)
+		printf("%s\n", ((Data*)node->data)->dialog);
+	if (node->children)
 	{
-		n = n->children;
-		for (int i = 0; n; i++)
+		node = node->children;
+		for (int i = 0; node; i++)
 		{
-			if (((Data*)n->data)->answer)
-				printf(" > %d: %s\n", i, ((Data*)n->data)->answer);
-			n = n->next;
+			if (((Data*)node->data)->answer)
+				printf(" > %d: %s\n", i, ((Data*)node->data)->answer);
+			node = node->next;
 		}
 	}
-	if (r->children)
-		printNode(r->children);
-	if (r->next)
-		printNode(r->next);
+	if (root->children)
+		nodePrint(root->children);
+	if (root->next)
+		nodePrint(root->next);
 }
 
 int	main(int argc, char **argv)
 {
 	if (argc < 2)
 		printf("%s: missing file operand\nTry '%s --help' for more information\n", argv[0], argv[0]);
-	Node	n;
+	Node	*node;
 	int i;
 	
 	for (i = 1; i < argc; i++)
@@ -200,8 +198,8 @@ int	main(int argc, char **argv)
 	{
 		// Load file and display tree's content is there is no error
 		err = 0;
-		n = NULL;
-		n = loadTree(argv[i]);
+		node = NULL;
+		node = loadTree(argv[i]);
 		if (err)
 		{
 			printf("%s: %s: ", argv[0], argv[i]);
@@ -215,9 +213,8 @@ int	main(int argc, char **argv)
 				puts("Tree is empty");
 		}
 		else
-			printNode(n);
-		n = freeTree(n);
-		
+			nodePrint(node);
+		nodeDestroy(node);
 	}
 	return 0;
 }

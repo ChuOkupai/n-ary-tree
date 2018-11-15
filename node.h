@@ -3,51 +3,61 @@
 
 #include <stdlib.h>
 
-typedef struct Node* Node;
+typedef struct Node Node;
 struct Node
 {
 	void	*data;
-	Node	next;
-	Node	prev;
-	Node	parent;
-	Node	children;
+	Node	*next;
+	Node	*prev;
+	Node	*parent;
+	Node	*children;
 };
 
-/* Create a new node */
-Node	newNode(void *data);
+/* Creates a new Node containing the given data */
+/** Returns NULL on error **/
+Node*	nodeNew(void *data);
 
-/* Create a new children if node exist */
-/** return a positive value on error **/
-int	newChildren(Node n, void *data);
+/* Inserts a Node as the first child of the given parent */
+/** Returns NULL on error **/
+#define	nodePrepend(parent, node)	nodeInsertBefore((Node*)parent, (Node*)parent->children, (Node*)node)
 
-/* Create a new parent if node exist without parent */
-int	newParent(Node n, void *data);
+/* Inserts a Node as the last child of the given parent */
+/** Returns NULL on error **/
+#define	nodeAppend(parent, node)	nodeInsertBefore((Node*)parent, NULL, (Node*)node)
 
-/* Search a node starting from a node */
-/** If node don't exist, return NULL **/
-Node	searchNode(Node n, void const *data, int (*compare)(void const *a, void const *b));
+/* Inserts a Node beneath the parent at the given position */
+/** Returns NULL on error **/
+Node*	nodeInsert(Node *parent, int position, Node *node);
 
-/* Get the root node in a tree (the first parent) */
-Node	getNodeRoot(Node n);
+/* Inserts a Node beneath the parent after the given sibling */
+Node*	nodeInsertAfter(Node *parent, Node *sibling, Node *node);
 
-/* Get the first child of node or NULL */
-Node	getFirstChild(Node n);
+/* Inserts a Node beneath the parent before the given sibling */
+/** If sibling is NULL, the node is inserted as the last child of parent **/
+/** Returns NULL on error **/
+Node*	nodeInsertBefore(Node *parent, Node *sibling, Node *node);
 
-/* Get the last child of node or NULL */
-Node	getLastChild(Node n);
+/* Returns a positive value if a Node is the root of a tree else 0 */
+#define	nodeIsRoot(node)	(! ((Node*)(node))->parent && ! ((Node*)(node))->next)
 
-/* Return the number of children of a node */
-int	getTotalChildren(Node n);
+/* Gets the root of a tree */
+/** Returns NULL on error **/
+Node*	nodeRoot(Node *node);
 
-/* Return the number of nodes in a tree */
-int	getTotalNode(Node n);
+/* Finds a Node in a tree */
+Node*	nodeFind(Node *node, void *data, int (*compare)(void *a, void *b));
 
-/* Free a node */
-/** Return a NULL pointer **/
-Node	freeNode(Node n);
+/* Gets a child of a Node, using the given index */
+/** Returns NULL if the index is too big **/
+Node*	nodeNthChild(Node *node, int n);
 
-/* Free a tree from node */
-/** Return a NULL pointer **/
-Node	freeTree(Node n);
+/* Gets the number of nodes in a tree */
+int	nodeTotal(Node	*root);
+
+/* Unlinks a Node from a tree, resulting in two separate trees */
+void	nodeUnlink(Node *node);
+
+/* Removes root and its children from the tree, freeing any memory allocated */
+void	nodeDestroy(Node *root);
 
 #endif /* node.h */

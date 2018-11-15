@@ -3,7 +3,7 @@
 #include <string.h>
 
 /* Print a node */
-void	printNode(char *name, Node n)
+void	nodePrint(char *name, Node *n)
 {
 	printf(" \e[4m%s:\e[0m\n", name);
 	if (! n)
@@ -11,7 +11,7 @@ void	printNode(char *name, Node n)
 		printf("  empty!\n");
 		return;
 	}
-	Node o;
+	Node *o;
 	int i;
 	
 	printf("  data     = ");
@@ -64,22 +64,25 @@ void	exampleA()
 	 *   / \
 	 *  o   o
 	 */
-	Node n;
+	Node *n;
 	
-	n = newNode("parent");
-	if (newChildren(n, "child1") ||
-		newChildren(n, "child2"))
-		n = freeTree(n);
+	n = nodeNew("parent");
+	if (! nodeAppend(n, nodeNew("child1")) ||
+		! nodeAppend(n, nodeNew("child2")))
+	{
+		nodeDestroy(n);
+		n = NULL;
+	}
 	if (! n)
 	{
 		printf("Error during tree initialization!\n");
 		return;
 	}
-	printNode("n", n);
-	printNode("n->children", n->children);
-	printNode("n->children->next", n->children->next);
-	printf(" \e[4mtotal:\e[0m %d\n", getTotalNode(n));
-	n = freeTree(n);
+	nodePrint("n", n);
+	nodePrint("n->children", n->children);
+	nodePrint("n->children->next", n->children->next);
+	printf(" \e[4mtotal:\e[0m %d\n", nodeTotal(n));
+	nodeDestroy(n);
 }
 
 void	exampleB()
@@ -94,27 +97,27 @@ void	exampleB()
 	 *    /  / \
 	 *   o  o   o
 	 */
-	Node n;
+	Node *n;
 	
-	n = newNode("parent");
-	if (newChildren(n, "child1-1") ||
-		newChildren(n, "child1-2") ||
-		newChildren(n->children->next, "child2-1") ||
-		newChildren(n->children->next, "child2-2") ||
-		newChildren(n->children->next, "child2-3") ||
-		newChildren(n->children->next->children->next, "child3-1") ||
-		newChildren(n->children->next->children->next->next, "child4-2") ||
-		newChildren(n->children->next->children->next->next, "child4-2"))
-		n = freeTree(n);
+	n = nodeNew("parent");
+	if (! nodeAppend(n, nodeNew("child1-1")) ||
+		! nodeAppend(n, nodeNew("child1-2")) ||
+		! nodeAppend(n->children->next, nodeNew("child2-1")) ||
+		! nodeAppend(n->children->next, nodeNew("child2-2")) ||
+		! nodeAppend(n->children->next, nodeNew("child2-3")) ||
+		! nodeAppend(n->children->next->children->next, nodeNew("child3-1")) ||
+		! nodeAppend(n->children->next->children->next->next, nodeNew("child4-2")) ||
+		! nodeAppend(n->children->next->children->next->next, nodeNew("child4-2")))
+		nodeDestroy(n);
 	if (! n)
 	{
 		printf("Error during tree initialization!\n");
 		return;
 	}
-	printNode("n", n);
-	printNode("n->children->next", n->children->next);
-	printf(" \e[4mtotal:\e[0m %d\n", getTotalNode(n));
-	n = freeTree(n);
+	nodePrint("n", n);
+	nodePrint("n->children->next", n->children->next);
+	printf(" \e[4mtotal:\e[0m %d\n", nodeTotal(n));
+	nodeDestroy(n);
 }
 
 void	exampleC()
@@ -127,22 +130,22 @@ void	exampleC()
 	 *  |
 	 *  o
 	 */
-	Node n;
+	Node *n;
 	
-	n = newNode("parent");
-	if (newChildren(n, "child1-1") ||
-		newChildren(searchNode(n, "child1-1", compare), "child2-1"))
-		n = freeTree(n);
+	n = nodeNew("parent");
+	if (! nodeAppend(n, nodeNew("child1-1")) ||
+		! nodeAppend(n->children, nodeNew("child2-1")))
+		nodeDestroy(n);
 	if (! n)
 	{
 		printf("Error during tree initialization!\n");
 		return;
 	}
-	printNode("n", n);
-	printNode("n->children", n->children);
-	printNode("n->children->children", n->children->children);
-	printf(" \e[4mtotal:\e[0m %d\n", getTotalNode(n));
-	n = freeTree(n);
+	nodePrint("n", n);
+	nodePrint("n->children", n->children);
+	nodePrint("n->children->children", n->children->children);
+	printf(" \e[4mtotal:\e[0m %d\n", nodeTotal(n));
+	nodeDestroy(n);
 }
 
 int	main()
